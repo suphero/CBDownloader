@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CBDownloader
 {
@@ -21,5 +22,19 @@ namespace CBDownloader
                            .Where(s => !s.StartsWith("#", Constraints.StringComparisonOption))
                            .ToList();
         }
+
+
+		public static string GetRegExChunk(string chunk)
+		{
+			var exp = ".*?\\d+.*?(\\d+)";
+			var r = new Regex(exp, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+			var m = r.Match(chunk);
+			if (m.Success)
+			{
+				return m.Groups[1].ToString();
+			}
+
+			throw new Exception("Unable to match with RegEx.");
+		}
     }
 }
