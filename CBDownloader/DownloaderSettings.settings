@@ -15,7 +15,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="RegExPattern" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">.*?\\d+.*?(\\d+)</Value>
+      <Value Profile="(Default)">.*?\d+.*?(\d+)</Value>
     </Setting>
   </Settings>
 </SettingsFile>

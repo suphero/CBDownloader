@@ -61,7 +61,7 @@ namespace CBDownloader {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(".*?\\\\d+.*?(\\\\d+)")]
+        [global::System.Configuration.DefaultSettingValueAttribute(".*?\\d+.*?(\\d+)")]
         public string RegExPattern {
             get {
                 return ((string)(this["RegExPattern"]));
