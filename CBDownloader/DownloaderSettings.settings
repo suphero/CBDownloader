@@ -3,7 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="DownloadPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">F:\cdownload</Value>
+      <Value Profile="(Default)">##DownloadPath##</Value>
+    </Setting>
+    <Setting Name="PlaylistFilePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">##PlaylistFilePath##</Value>
+    </Setting>
+    <Setting Name="PlaylistFileNameToSave" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">playlist.txt</Value>
     </Setting>
   </Settings>
 </SettingsFile>

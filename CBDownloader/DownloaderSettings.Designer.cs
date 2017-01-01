@@ -25,10 +25,28 @@ namespace CBDownloader {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("F:\\cdownload")]
+        [global::System.Configuration.DefaultSettingValueAttribute("##DownloadPath##")]
         public string DownloadPath {
             get {
                 return ((string)(this["DownloadPath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("##PlaylistFilePath##")]
+        public string PlaylistFilePath {
+            get {
+                return ((string)(this["PlaylistFilePath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("playlist.txt")]
+        public string PlaylistFileNameToSave {
+            get {
+                return ((string)(this["PlaylistFileNameToSave"]));
             }
         }
     }

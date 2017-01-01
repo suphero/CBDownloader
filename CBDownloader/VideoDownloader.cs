@@ -1,86 +1,110 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace CBDownloader
 {
-    public abstract class VideoDownloader
+    public class VideoDownloader
     {
-        private readonly WebClient _webClient;
+        MyWebClient MyWebClient { get; }
+        MyFileStream MyFileStream { get; }
 
-        protected VideoDownloader(WebClient webClient)
+        List<string> TriedChunks { get; }
+        List<string> DownloadedChunks { get; }
+        List<string> FailedChunks { get; }
+        int RepeatedExceptions { get; set; }
+        string DownloadPath { get; }
+        Uri PlaylistUri { get; }
+        Uri BaseUri { get; }
+        Uri ChunklistUri { get; set; }
+
+        public VideoDownloader()
         {
-            _webClient = webClient;
+            MyWebClient = new MyWebClient();
+            MyFileStream = new MyFileStream();
+
+            TriedChunks = new List<string>();
+            DownloadedChunks = new List<string>();
+            FailedChunks = new List<string>();
+            RepeatedExceptions = 0;
+            DownloadPath = MyFileStream.GetDownloadPath();
+            PlaylistUri = MyFileStream.GetPlaylistUri();
+            BaseUri = new Uri(PlaylistUri, ".");
         }
 
-        public void DownloadPlaylist(Uri playlistUri)
+        public async Task DownloadPlaylist()
         {
-            var baseUri = new Uri(playlistUri, ".");
-            var chunkFile = ChunklistFile(playlistUri);
-            var chunklistUrl = new Uri(baseUri, chunkFile);
-            var downloadedChunks = new List<string>();
+            await GenerateChunklistUri(PlaylistUri);
 
-            var path = DownloadPath(playlistUri);
-            Directory.CreateDirectory(path);
+            MyFileStream.CreateDirectory(DownloadPath);
+            MyFileStream.SavePlaylistFile(DownloadPath, PlaylistUri);
 
-            var error = false;
-            while (!error)
+            while (RepeatedExceptions < Constraints.RepeatedExceptionCountToBreak)
             {
-                try
-                {
-                    var allchunks = AllChunks(chunklistUrl);
-                    Console.WriteLine(allchunks.Count + " chunks");
-                    var chunks = allchunks.Except(downloadedChunks);
-
-                    foreach (var chunk in chunks)
-                    {
-                        try
-                        {
-                            var data = _webClient.DownloadData(new Uri(baseUri, chunk));
-                            SaveData(data, path, chunk);
-                            downloadedChunks.Add(chunk);
-                            Console.WriteLine(chunk + " downloaded");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    error = true;
-                    Console.WriteLine(ex.Message);
-                }
+                await DownloadChunks();
             }
         }
 
-        private List<string> AllChunks(Uri chunklistUri)
+        async Task GenerateChunklistUri(Uri playlistUri)
         {
-            var chunkList = _webClient.DownloadString(chunklistUri).Trim();
-            return GetUncommentedPlaylistLines(chunkList);
-        }
-
-        private string ChunklistFile(Uri playlistUri)
-        {
-            var playlist = _webClient.DownloadString(playlistUri).Trim();
-            return GetUncommentedPlaylistLines(playlist).First();
-        }
-
-        private List<string> GetUncommentedPlaylistLines(string playlist)
-        {
-            return playlist.Split('\n').ToList().Select(s => s.Trim()).Where(s => !s.StartsWith("#")).ToList();
-        }
-
-        protected abstract string DownloadPath(Uri playlistUri);
-
-        private void SaveData(byte[] buffer, string path, string fileName)
-        {
-            using (var fileStream = File.Create(Path.Combine(path, fileName)))
+            var playlistContents = await MyWebClient.GetFileContent(playlistUri);
+            var chunkFile = playlistContents.FirstOrDefault(c => c.EndsWith(Constraints.PlaylistFileExtension, Constraints.StringComparisonOption));
+            if (chunkFile != null)
             {
-                fileStream.Write(buffer, 0, buffer.Length);
+                await GenerateChunklistUri(new Uri(BaseUri, chunkFile));
+            }
+            else
+            {
+                ChunklistUri = playlistUri;
+            }
+        }
+
+        async Task DownloadChunks()
+        {
+            try
+            {
+                var chunks = await GetChunksToDownload();
+                foreach (var chunk in chunks)
+                {
+                    DownloadChunk(chunk);
+                }
+            }
+            catch (Exception ex)
+            {
+                RepeatedExceptions++;
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        async Task<List<string>> GetChunksToDownload()
+        {
+            var allchunks = await MyWebClient.GetFileContent(ChunklistUri);
+            Console.WriteLine(allchunks.Count + " chunks");
+            return allchunks
+                .Where(c => !DownloadedChunks.Contains(c) &&
+                       !TriedChunks.Contains(c) &&
+                       FailedChunks.Count(f => f == c) <= Constraints.RepeatedExceptionCountToBreak)
+                .ToList();
+        }
+
+        void DownloadChunk(string chunk)
+        {
+            try
+            {
+                TriedChunks.Add(chunk);
+                MyWebClient.DownloadData(new Uri(BaseUri, chunk)).ContinueWith(data =>
+                {
+                    MyFileStream.SaveData(data.Result, DownloadPath, chunk);
+                    DownloadedChunks.Add(chunk);
+                    RepeatedExceptions = 0;
+                });
+            }
+            catch (Exception ex)
+            {
+                TriedChunks.Remove(chunk);
+                FailedChunks.Add(chunk);
+                Console.WriteLine(ex.Message);
             }
         }
     }

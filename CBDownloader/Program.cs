@@ -1,19 +1,11 @@
-﻿using System;
-using System.Net;
-
-namespace CBDownloader
+﻿namespace CBDownloader
 {
-    class Program
+    class MainClass
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            using (WebClient webClient = new WebClient())
-            {
-                var cbDownloader = new CBDownloader(webClient);
-                var playlistUri = new Uri(args[0]);
-                cbDownloader.DownloadPlaylist(playlistUri);
-                Console.ReadKey();
-            }
+            var cbDownloader = new VideoDownloader();
+            cbDownloader.DownloadPlaylist().Wait();
         }
     }
 }
