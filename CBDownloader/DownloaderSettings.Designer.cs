@@ -49,5 +49,23 @@ namespace CBDownloader {
                 return ((string)(this["PlaylistFileNameToSave"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseRegEx {
+            get {
+                return ((bool)(this["UseRegEx"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".*?\\\\d+.*?(\\\\d+)")]
+        public string RegExPattern {
+            get {
+                return ((string)(this["RegExPattern"]));
+            }
+        }
     }
 }

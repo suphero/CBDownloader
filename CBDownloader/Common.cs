@@ -26,8 +26,12 @@ namespace CBDownloader
 
 		public static string GetRegExChunk(string chunk)
 		{
-			var exp = ".*?\\d+.*?(\\d+)";
-			var r = new Regex(exp, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            if (!DownloaderSettings.Default.UseRegEx)
+            {
+                return chunk;
+            }
+
+			var r = new Regex(DownloaderSettings.Default.RegExPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 			var m = r.Match(chunk);
 			if (m.Success)
 			{
