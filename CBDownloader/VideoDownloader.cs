@@ -17,6 +17,7 @@ namespace CBDownloader
         string DownloadPath { get; }
         Uri PlaylistUri { get; }
         Uri BaseUri { get; }
+        Uri DeepPlaylistUri { get; set; }
 
         public VideoDownloader()
         {
@@ -30,6 +31,7 @@ namespace CBDownloader
             DownloadPath = MyFileStream.GetDownloadPath();
             PlaylistUri = MyFileStream.GetPlaylistUri();
             BaseUri = new Uri(PlaylistUri, ".");
+            DeepPlaylistUri = PlaylistUri;
         }
 
         public async Task DownloadPlaylist()
@@ -54,6 +56,10 @@ namespace CBDownloader
 			}
 			else 
 			{
+                if (DownloaderSettings.Default.UseDeepPlaylistUri)
+                {
+                    DeepPlaylistUri = playlistUri;
+                }
 				return playlistContents;
 			}
 		}
@@ -77,7 +83,7 @@ namespace CBDownloader
 
         async Task<List<string>> GetChunksToDownload()
         {
-			var allchunks = await GetChunks(PlaylistUri);
+			var allchunks = await GetChunks(DeepPlaylistUri);
             Console.WriteLine(allchunks.Count + " chunks");
 			var chunksToReturn = new List<string>();
 			foreach (var chunk in allchunks)

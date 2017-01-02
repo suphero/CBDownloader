@@ -67,5 +67,14 @@ namespace CBDownloader {
                 return ((string)(this["RegExPattern"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseDeepPlaylistUri {
+            get {
+                return ((bool)(this["UseDeepPlaylistUri"]));
+            }
+        }
     }
 }

@@ -17,5 +17,8 @@
     <Setting Name="RegExPattern" Type="System.String" Scope="Application">
       <Value Profile="(Default)">.*?\d+.*?(\d+)</Value>
     </Setting>
+    <Setting Name="UseDeepPlaylistUri" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
