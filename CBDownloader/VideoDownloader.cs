@@ -123,7 +123,7 @@ namespace CBDownloader
 
 		string GetRegExChunk(string chunk) 
 		{
-			return Common.GetControlledRegExResult(DownloaderSettings.Default.UseRegEx, chunk, DownloaderSettings.Default.RegExPattern);
+			return Common.GetControlledRegExResult(DownloaderSettings.Default.UseChunkRegEx, chunk, DownloaderSettings.Default.ChunkRegExPattern);
 		}
     }
 }

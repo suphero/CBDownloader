@@ -43,7 +43,7 @@ namespace CBDownloader
 
 		string GetRegExMainFolder(Uri playlistUri)
 		{
-			return Common.GetControlledRegExResult(DownloaderSettings.Default.UseRegEx, playlistUri.AbsoluteUri, DownloaderSettings.Default.RegExPattern);
+			return Common.GetControlledRegExResult(DownloaderSettings.Default.UsePlaylistRegEx, playlistUri.AbsoluteUri, DownloaderSettings.Default.PlaylistRegExPattern);
 		}
     }
 }

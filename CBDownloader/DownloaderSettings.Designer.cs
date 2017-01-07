@@ -53,18 +53,18 @@ namespace CBDownloader {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UseRegEx {
+        public bool UseChunkRegEx {
             get {
-                return ((bool)(this["UseRegEx"]));
+                return ((bool)(this["UseChunkRegEx"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(".*?\\d+.*?(\\d+)")]
-        public string RegExPattern {
+        public string ChunkRegExPattern {
             get {
-                return ((string)(this["RegExPattern"]));
+                return ((string)(this["ChunkRegExPattern"]));
             }
         }
         
@@ -74,6 +74,25 @@ namespace CBDownloader {
         public bool UseDeepPlaylistUri {
             get {
                 return ((bool)(this["UseDeepPlaylistUri"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UsePlaylistRegEx {
+            get {
+                return ((bool)(this["UsePlaylistRegEx"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".*?(?:[a-z][a-z]+).*?(?:[a-z][a-z]+).*?(?:[a-z][a-z]+).*?(?:[a-z][a-z]+).*?(?:[a-" +
+            "z][a-z]+).*?(?:[a-z][a-z]+).*?(?:[a-z][a-z]+).*?((?:[a-z][a-z]+))")]
+        public string PlaylistRegExPattern {
+            get {
+                return ((string)(this["PlaylistRegExPattern"]));
             }
         }
     }
