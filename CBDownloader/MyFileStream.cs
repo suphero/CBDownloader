@@ -15,8 +15,9 @@ namespace CBDownloader
             }
         }
 
-        public string GetDownloadPath()
+        public string GetDownloadPath(Uri playlistUri)
         {
+			var mainFolder = GetRegExMainFolder(playlistUri);
             return Path.Combine(DownloaderSettings.Default.DownloadPath, DateTime.Now.ToFileTimeUtc().ToString());
         }
 
@@ -39,5 +40,10 @@ namespace CBDownloader
             var file = File.ReadAllText(DownloaderSettings.Default.PlaylistFilePath);
             return new Uri(file);
         }
+
+		string GetRegExMainFolder(Uri playlistUri)
+		{
+			return Common.GetControlledRegExResult(DownloaderSettings.Default.UseRegEx, playlistUri.AbsoluteUri, DownloaderSettings.Default.RegExPattern);
+		}
     }
 }

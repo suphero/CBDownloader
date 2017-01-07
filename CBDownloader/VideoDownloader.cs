@@ -28,8 +28,8 @@ namespace CBDownloader
             DownloadedChunks = new List<string>();
             FailedChunks = new List<string>();
             RepeatedExceptions = 0;
-            DownloadPath = MyFileStream.GetDownloadPath();
-            PlaylistUri = MyFileStream.GetPlaylistUri();
+			PlaylistUri = MyFileStream.GetPlaylistUri();
+            DownloadPath = MyFileStream.GetDownloadPath(PlaylistUri);
             BaseUri = new Uri(PlaylistUri, ".");
             DeepPlaylistUri = PlaylistUri;
         }
@@ -88,7 +88,7 @@ namespace CBDownloader
 			var chunksToReturn = new List<string>();
 			foreach (var chunk in allchunks)
 			{
-				var reChunk = Common.GetRegExChunk(chunk);
+				var reChunk = GetRegExChunk(chunk);
 				if (!DownloadedChunks.Contains(reChunk) &&
 				    !TriedChunks.Contains(reChunk) &&
 				    FailedChunks.Count(f => f == reChunk) <= Constraints.RepeatedExceptionCountToBreak) 
@@ -102,7 +102,7 @@ namespace CBDownloader
 
         void DownloadChunk(string chunk)
         {
-			var reChunk = Common.GetRegExChunk(chunk);
+			var reChunk = GetRegExChunk(chunk);
             try
             {
                 TriedChunks.Add(reChunk);
@@ -120,5 +120,10 @@ namespace CBDownloader
                 Console.WriteLine(ex.Message);
             }
         }
+
+		string GetRegExChunk(string chunk) 
+		{
+			return Common.GetControlledRegExResult(DownloaderSettings.Default.UseRegEx, chunk, DownloaderSettings.Default.RegExPattern);
+		}
     }
 }

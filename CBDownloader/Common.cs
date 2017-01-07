@@ -23,22 +23,26 @@ namespace CBDownloader
                            .ToList();
         }
 
-
-		public static string GetRegExChunk(string chunk)
+		public static string GetRegExResult(string input, string pattern)
 		{
-            if (!DownloaderSettings.Default.UseRegEx)
-            {
-                return chunk;
-            }
-
-			var r = new Regex(DownloaderSettings.Default.RegExPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-			var m = r.Match(chunk);
+			var r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+			var m = r.Match(input);
 			if (m.Success)
 			{
 				return m.Groups[1].ToString();
 			}
 
-			throw new Exception("Unable to match with RegEx.");
+			throw new Exception(string.Format("Unable to match {0} with RegEx pattern {1}.", input, pattern));
+		}
+
+		public static string GetControlledRegExResult(bool validation, string input, string pattern)
+		{
+			if (!validation)
+			{
+				return input;
+			}
+
+			return GetRegExResult(input, pattern);
 		}
     }
 }
