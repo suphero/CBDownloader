@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace CBDownloader
@@ -17,8 +18,13 @@ namespace CBDownloader
 
         public string GetDownloadPath(Uri playlistUri)
         {
-			var mainFolder = GetRegExMainFolder(playlistUri);
-            return Path.Combine(DownloaderSettings.Default.DownloadPath, DateTime.Now.ToFileTimeUtc().ToString());
+			var paths = new List<string> { DownloaderSettings.Default.DownloadPath };
+			if (DownloaderSettings.Default.UsePlaylistRegEx)
+			{
+				paths.Add(GetRegExMainFolder(playlistUri));
+			}
+			paths.Add(DateTime.Now.ToFileTimeUtc().ToString());
+			return Path.Combine(paths.ToArray());
         }
 
         public void SaveData(byte[] buffer, string path, string fileName)
